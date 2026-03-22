@@ -3,8 +3,9 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
-from app.api.orders import router as orders_router
+from app.api.orders import pool, router as orders_router
 from app.jobs.refund_scheduler import start_scheduler, stop_scheduler
+from app.services.dedupe_cache import cache_size
 
 APP_NAME = "checkout-ops-demo-py"
 LOG_PATH = Path(__file__).resolve().parents[1] / "logs" / "incident.log"
@@ -38,8 +39,12 @@ app.include_router(orders_router)
 
 
 @app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+def health() -> dict[str, int | str]:
+    return {
+        "status": "ok",
+        "cacheSize": cache_size(),
+        "activeDbConnections": pool.active_connections(),
+    }
 
 
 @app.on_event("startup")
