@@ -75,5 +75,3 @@ python scripts/seed_traffic.py
 ## Logs
 
 Application logs are written to logs/incident.log.
-
-* This repo also includes intentional incident patterns for detection demos; see INCIDENT_CATALOG.md.
